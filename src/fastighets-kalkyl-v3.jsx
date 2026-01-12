@@ -949,11 +949,8 @@ const FastighetsKalkylInner = () => {
         {/* Header */}
         <div className={`rounded-2xl shadow-xl p-4 sm:p-6 mb-4 sm:mb-6 transition-colors duration-300 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4 sm:mb-6">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                <span className={darkMode ? 'text-blue-400' : 'text-[#1e3a5f]'}>Fast</span>
-                <span className="text-[#f97316]">X</span>
-              </h1>
+            <div className="flex items-center gap-3">
+              <img src="/icons/logo.png" alt="FastX" className="h-10 sm:h-12 w-auto rounded-lg" />
               <p className={`text-xs sm:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Fastighetskalkyl för investerare</p>
             </div>
             <div className="mt-3 lg:mt-0 flex flex-wrap items-center gap-2">
@@ -2274,8 +2271,9 @@ const FastighetsKalkylInner = () => {
         </div>
 
         {/* Footer */}
-        <div className={`text-center text-xs sm:text-sm py-4 ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
-          <span className="font-semibold"><span className={darkMode ? 'text-blue-400' : 'text-[#1e3a5f]'}>Fast</span><span className="text-[#f97316]">X</span></span> • Fastighetskalkyl för investerare
+        <div className={`text-center text-xs sm:text-sm py-4 flex items-center justify-center gap-2 ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+          <img src="/icons/logo.png" alt="FastX" className="h-6 w-auto rounded" />
+          <span>• Fastighetskalkyl för investerare</span>
         </div>
       </div>
       
