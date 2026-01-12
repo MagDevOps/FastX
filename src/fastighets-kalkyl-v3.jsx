@@ -946,7 +946,7 @@ const FastighetsKalkylInner = () => {
   return (
     <div className={`min-h-screen p-2 sm:p-4 transition-colors duration-300 ${darkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-slate-50 to-blue-50'}`}>
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
+       {/* Header */}
         <div className={`rounded-2xl shadow-xl p-4 sm:p-6 mb-4 sm:mb-6 transition-colors duration-300 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4 sm:mb-6">
             <div className="flex items-center gap-3">
