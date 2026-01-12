@@ -950,7 +950,7 @@ const FastighetsKalkylInner = () => {
         <div className={`rounded-2xl shadow-xl p-4 sm:p-6 mb-4 sm:mb-6 transition-colors duration-300 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between mb-4 sm:mb-6">
             <div className="flex items-center gap-3">
-              <img src="/icons/logo.png" alt="FastX" className="h-10 sm:h-12 w-auto rounded-lg" />
+              <img src="/icons/logo.png" alt="FastX" className={"h-10 sm:h-12 w-auto rounded-lg" />
               <p className={`text-xs sm:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>Fastighetskalkyl för investerare</p>
             </div>
             <div className="mt-3 lg:mt-0 flex flex-wrap items-center gap-2">
@@ -2272,7 +2272,7 @@ const FastighetsKalkylInner = () => {
 
         {/* Footer */}
         <div className={`text-center text-xs sm:text-sm py-4 flex items-center justify-center gap-2 ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
-          <img src="/icons/logo.png" alt="FastX" className="h-6 w-auto rounded" />
+          <img src="/icons/logo.png" alt="FastX" className={"h-6 w-auto rounded" />
           <span>• Fastighetskalkyl för investerare</span>
         </div>
       </div>
