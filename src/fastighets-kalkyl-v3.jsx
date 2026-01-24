@@ -503,12 +503,12 @@ const FastighetsKalkylInner = () => {
     const { error: saveError } = await saveKalkyl(newCalc);
     
     if (saveError) {
-      setError('❌ Kunde inte spara: ' + saveError.message);
+      setError('âŒ Kunde inte spara: ' + saveError.message);
       setTimeout(() => setError(''), 4000);
     } else {
       setSaveName('');
       setShowSaveDialog(false);
-      setError(user ? '✓ Kalkyl sparad till molnet!' : '✓ Kalkyl sparad lokalt!');
+      setError(user ? 'âœ“ Kalkyl sparad till molnet!' : 'âœ“ Kalkyl sparad lokalt!');
       setTimeout(() => setError(''), 2000);
     }
   };
@@ -520,7 +520,7 @@ const FastighetsKalkylInner = () => {
     if (calc.nackdelar) setNackdelar(calc.nackdelar);
     if (calc.renoveringar) setRenoveringar(calc.renoveringar);
     if (calc.renoveringBelastarDrift !== undefined) setRenoveringBelastarDrift(calc.renoveringBelastarDrift);
-    setError(`✓ Laddade "${calc.name}"`);
+    setError(`âœ“ Laddade "${calc.name}"`);
     setTimeout(() => setError(''), 2000);
   };
 
@@ -529,7 +529,7 @@ const FastighetsKalkylInner = () => {
     if (id === 'demo') return;
     const { error: deleteError } = await deleteKalkyl(id);
     if (deleteError) {
-      setError('❌ Kunde inte ta bort: ' + deleteError.message);
+      setError('âŒ Kunde inte ta bort: ' + deleteError.message);
       setTimeout(() => setError(''), 4000);
     }
   };
@@ -542,7 +542,7 @@ const FastighetsKalkylInner = () => {
     const totalInvesteringBelanat = metrics.egetKapital + metrics.totalaEngangskostnader + metrics.totalaRenoveringskostnader;
     const payoffTid = metrics.cashflowEfterSkattSaljare > 0 
       ? (totalInvesteringBelanat / metrics.cashflowEfterSkattSaljare).toFixed(1) + ' år' 
-      : '∞';
+      : 'âˆž';
     
     const htmlContent = `
 <!DOCTYPE html>
@@ -588,7 +588,7 @@ const FastighetsKalkylInner = () => {
     .pros-title { color: #16a34a; font-weight: bold; margin-bottom: 10px; }
     .cons-title { color: #dc2626; font-weight: bold; margin-bottom: 10px; }
     .list-item { padding: 3px 0; padding-left: 15px; position: relative; }
-    .list-item:before { content: "•"; position: absolute; left: 0; }
+    .list-item:before { content: "â€¢"; position: absolute; left: 0; }
     .renovation-list { margin-top: 10px; }
     .renovation-item { display: flex; justify-content: space-between; padding: 3px 0; font-size: 10px; }
     @media print { .page { padding: 20px; } body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
@@ -628,11 +628,11 @@ const FastighetsKalkylInner = () => {
     
     <div class="grid">
       <div class="section">
-        <div class="section-title">🏠 Grunddata</div>
+        <div class="section-title">ðŸ  Grunddata</div>
         <div class="card">
           <div class="row"><span class="row-label">Antal lägenheter</span><span class="row-value">${data.antalLagenheter} st</span></div>
           <div class="row"><span class="row-label">Antal lokaler</span><span class="row-value">${data.antalLokaler} st</span></div>
-          <div class="row"><span class="row-label">Bruksarea</span><span class="row-value">${data.bruksarea} m²</span></div>
+          <div class="row"><span class="row-label">Bruksarea</span><span class="row-value">${data.bruksarea} mÂ²</span></div>
           <div class="row"><span class="row-label">Hyresintäkter/år</span><span class="row-value">${formatCurrency(data.hyresintakterAr)}</span></div>
           <div class="row"><span class="row-label">Driftkostnader/år</span><span class="row-value">${formatCurrency(data.driftkostnaderSaljare)}</span></div>
           <div class="row"><span class="row-label">Driftnetto (NOI)</span><span class="row-value">${formatCurrency(metrics.driftnettoSaljare)}</span></div>
@@ -653,7 +653,7 @@ const FastighetsKalkylInner = () => {
     
     <div class="grid">
       <div class="section">
-        <div class="section-title">📋 Engångskostnader</div>
+        <div class="section-title">ðŸ“‹ Engångskostnader</div>
         <div class="card">
           <div class="row"><span class="row-label">Köpare</span><span class="row-value">${data.kopareTyp === 'bolag' ? 'Bolag' : 'Privatperson'}</span></div>
           <div class="row"><span class="row-label">Stämpelskatt (${data.kopareTyp === 'bolag' ? '4,25' : '1,5'}%)</span><span class="row-value">${formatCurrency(metrics.stampelskatt)}</span></div>
@@ -665,27 +665,27 @@ const FastighetsKalkylInner = () => {
       
       ${metrics.totalaRenoveringskostnader > 0 ? `
       <div class="section">
-        <div class="section-title">🔧 Renoveringskostnader</div>
+        <div class="section-title">ðŸ”§ Renoveringskostnader</div>
         <div class="card">
           ${renoveringar.filter(r => r.kostnad > 0).map(r => `
             <div class="row"><span class="row-label">${r.namn || 'Renovering'}</span><span class="row-value">${formatCurrency(r.kostnad)}</span></div>
           `).join('')}
           <div class="row"><span class="row-label"><strong>Summa</strong></span><span class="row-value"><strong>${formatCurrency(metrics.totalaRenoveringskostnader)}</strong></span></div>
-          <div style="font-size: 9px; color: #64748b; margin-top: 5px;">${renoveringBelastarDrift ? '⚠️ Belastar driftnetto' : 'Engångskostnad'}</div>
+          <div style="font-size: 9px; color: #64748b; margin-top: 5px;">${renoveringBelastarDrift ? '⚠️ Belastar driftnetto' : 'Engångskostnad'}</div>
         </div>
       </div>
       ` : ''}
     </div>
     
     <div class="section">
-      <div class="section-title">🏦 Kassaflöde enligt olika beräkningsmetoder</div>
+      <div class="section-title">ðŸ¦ Kassaflöde enligt olika beräkningsmetoder</div>
       <table class="table">
         <thead>
           <tr>
             <th></th>
             <th class="right">Säljarens info</th>
             <th class="right">50%-regeln</th>
-            <th class="right">Schablon 420kr/m²</th>
+            <th class="right">Schablon 420kr/mÂ²</th>
           </tr>
         </thead>
         <tbody>
@@ -752,11 +752,11 @@ const FastighetsKalkylInner = () => {
       <div class="section-title">📝 Fördelar & Nackdelar</div>
       <div class="pros-cons">
         <div class="pros">
-          <div class="pros-title">✓ Fördelar</div>
+          <div class="pros-title">âœ“ Fördelar</div>
           ${fordelar.filter(f => f.trim()).map(f => `<div class="list-item">${f}</div>`).join('') || '<div style="color: #94a3b8;">Inga angivna</div>'}
         </div>
         <div class="cons">
-          <div class="cons-title">✗ Nackdelar</div>
+          <div class="cons-title">âœ— Nackdelar</div>
           ${nackdelar.filter(n => n.trim()).map(n => `<div class="list-item">${n}</div>`).join('') || '<div style="color: #94a3b8;">Inga angivna</div>'}
         </div>
       </div>
@@ -775,7 +775,7 @@ const FastighetsKalkylInner = () => {
     </div>
     
     <div class="footer">
-      Genererad med FastX • ${reportDate} • Alla beräkningar är uppskattningar
+      Genererad med FastX â€¢ ${reportDate} â€¢ Alla beräkningar är uppskattningar
     </div>
   </div>
 </body>
@@ -901,7 +901,7 @@ const FastighetsKalkylInner = () => {
         if (decoded.ui !== undefined) setUseIndividualRents(decoded.ui);
         // Rensa URL:en
         window.history.replaceState({}, document.title, window.location.pathname);
-        setError('✓ Delad kalkyl laddad!');
+        setError('âœ“ Delad kalkyl laddad!');
         setTimeout(() => setError(''), 3000);
       } catch (e) {
         console.log('Kunde inte ladda delad kalkyl');
@@ -994,7 +994,7 @@ const FastighetsKalkylInner = () => {
                 {darkMode ? <Sun size={18} /> : <Moon size={18} />}
               </button>
               <span className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${metrics.cashflowEfterSkattSaljare > 0 ? darkMode ? 'bg-green-900/50 text-green-400' : 'bg-green-100 text-green-700' : darkMode ? 'bg-red-900/50 text-red-400' : 'bg-red-100 text-red-700'}`}>
-                {metrics.cashflowEfterSkattSaljare > 0 ? '✓ Positivt' : '✗ Negativt'}
+                {metrics.cashflowEfterSkattSaljare > 0 ? 'âœ“ Positivt' : 'âœ— Negativt'}
               </span>
               <span className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium ${darkMode ? 'bg-blue-900/50 text-blue-400' : 'bg-blue-100 text-blue-700'}`}>
                 {metrics.direktavkastning.toFixed(2)}%
@@ -1072,7 +1072,7 @@ const FastighetsKalkylInner = () => {
                   </button>
                 </div>
                 {linkCopied && (
-                  <p className="text-green-500 text-xs sm:text-sm mb-3 sm:mb-4">✓ Länk kopierad!</p>
+                  <p className="text-green-500 text-xs sm:text-sm mb-3 sm:mb-4">âœ“ Länk kopierad!</p>
                 )}
                 <button
                   onClick={() => setShowShareDialog(false)}
@@ -1147,7 +1147,7 @@ const FastighetsKalkylInner = () => {
           </div>
 
           {error && (
-            <div className={`mb-4 px-3 py-2 rounded-lg text-sm ${error.startsWith('✓') ? darkMode ? 'bg-green-900/50 text-green-400' : 'bg-green-100 text-green-700' : darkMode ? 'bg-red-900/50 text-red-400' : 'bg-red-100 text-red-700'}`}>
+            <div className={`mb-4 px-3 py-2 rounded-lg text-sm ${error.startsWith('âœ“') ? darkMode ? 'bg-green-900/50 text-green-400' : 'bg-green-100 text-green-700' : darkMode ? 'bg-red-900/50 text-red-400' : 'bg-red-100 text-red-700'}`}>
               {error}
             </div>
           )}
@@ -1254,7 +1254,7 @@ const FastighetsKalkylInner = () => {
                                   onClick={() => setLagenhetsHyror(lagenhetsHyror.slice(0, -1))}
                                   className={`w-7 h-7 flex items-center justify-center text-sm rounded ${darkMode ? 'bg-gray-600 text-gray-300 hover:bg-gray-500' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'}`}
                                 >
-                                  −
+                                  âˆ’
                                 </button>
                               )}
                             </div>
@@ -1303,7 +1303,7 @@ const FastighetsKalkylInner = () => {
                                   onClick={() => setLokalHyror(lokalHyror.slice(0, -1))}
                                   className={`w-7 h-7 flex items-center justify-center text-sm rounded ${darkMode ? 'bg-gray-600 text-gray-300 hover:bg-gray-500' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'}`}
                                 >
-                                  −
+                                  âˆ’
                                 </button>
                               )}
                             </div>
@@ -1354,7 +1354,7 @@ const FastighetsKalkylInner = () => {
                   
                   <InputField label="Driftkostnader (från säljare)" value={data.driftkostnaderSaljare} field="driftkostnaderSaljare" suffix="kr/år" onValueChange={handleValueChange} darkMode={darkMode} />
                   
-                  <InputField label="Bruksarea totalt" value={data.bruksarea} field="bruksarea" suffix="m²" onValueChange={handleValueChange} darkMode={darkMode} />
+                  <InputField label="Bruksarea totalt" value={data.bruksarea} field="bruksarea" suffix="mÂ²" onValueChange={handleValueChange} darkMode={darkMode} />
                   
                   <div className={`mt-3 pt-3 border-t space-y-1 ${darkMode ? 'border-gray-600' : 'border-blue-200'}`}>
                     <ResultRow label="Driftnetto (NOI)" value={formatCurrency(metrics.driftnettoSaljare)} highlight darkMode={darkMode} />
@@ -1369,7 +1369,7 @@ const FastighetsKalkylInner = () => {
                   
                   {isFullyOwnedCapital && (
                     <div className={`mb-3 p-2 sm:p-3 rounded-lg text-xs sm:text-sm ${darkMode ? 'bg-green-900/30 border border-green-700 text-green-400' : 'bg-green-100 border border-green-300 text-green-800'}`}>
-                      ✓ Kontantköp - ingen belåning
+                      âœ“ Kontantköp - ingen belåning
                     </div>
                   )}
                   
@@ -1393,7 +1393,7 @@ const FastighetsKalkylInner = () => {
               <div className="space-y-4">
                 {/* Engångskostnader */}
                 <div className={`rounded-xl p-3 sm:p-4 ${darkMode ? 'bg-gray-700/50' : 'bg-gradient-to-br from-amber-50 to-amber-100/50'}`}>
-                  <h3 className={`text-base sm:text-lg font-bold mb-3 sm:mb-4 ${darkMode ? 'text-amber-400' : 'text-amber-900'}`}>📋 Engångskostnader</h3>
+                  <h3 className={`text-base sm:text-lg font-bold mb-3 sm:mb-4 ${darkMode ? 'text-amber-400' : 'text-amber-900'}`}>ðŸ“‹ Engångskostnader</h3>
                   
                   <div className="mb-3">
                     <label className={`block text-sm font-medium mb-1 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>Köpare</label>
@@ -1483,7 +1483,7 @@ const FastighetsKalkylInner = () => {
                   <div className={`mt-3 pt-3 border-t ${darkMode ? 'border-orange-800' : 'border-orange-200'}`}>
                     <ResultRow label="Totalt renovering" value={formatCurrency(metrics.totalaRenoveringskostnader)} highlight darkMode={darkMode} />
                     {renoveringBelastarDrift && (
-                      <div className={`text-xs mt-1 ${darkMode ? 'text-orange-400' : 'text-orange-600'}`}>⚠️ Belastar driftnettot</div>
+                      <div className={`text-xs mt-1 ${darkMode ? 'text-orange-400' : 'text-orange-600'}`}>⚠️ Belastar driftnettot</div>
                     )}
                   </div>
                 </div>
@@ -1493,7 +1493,7 @@ const FastighetsKalkylInner = () => {
               <div className="space-y-4">
                 {/* Bankens schabloner */}
                 <div className={`rounded-xl p-3 sm:p-4 ${darkMode ? 'bg-gray-700/50' : 'bg-gradient-to-br from-purple-50 to-purple-100/50'}`}>
-                  <h3 className={`text-base sm:text-lg font-bold mb-3 sm:mb-4 ${darkMode ? 'text-purple-400' : 'text-purple-900'}`}>🏦 Bankens schabloner</h3>
+                  <h3 className={`text-base sm:text-lg font-bold mb-3 sm:mb-4 ${darkMode ? 'text-purple-400' : 'text-purple-900'}`}>ðŸ¦ Bankens schabloner</h3>
                   
                   <div className="space-y-2 sm:space-y-3">
                     <div className={`rounded-lg p-2 sm:p-3 ${darkMode ? 'bg-gray-600/50' : 'bg-white'}`}>
@@ -1509,7 +1509,7 @@ const FastighetsKalkylInner = () => {
                     </div>
                     
                     <div className={`rounded-lg p-2 sm:p-3 ${darkMode ? 'bg-gray-600/50' : 'bg-white'}`}>
-                      <div className={`text-xs sm:text-sm font-medium mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>420 kr/m²</div>
+                      <div className={`text-xs sm:text-sm font-medium mb-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>420 kr/mÂ²</div>
                       <div className={`flex justify-between text-xs sm:text-sm ${darkMode ? 'text-gray-300' : ''}`}>
                         <span>Driftkostnad:</span>
                         <span className="font-semibold">{formatCurrency(metrics.schablonKvm)}</span>
@@ -1603,7 +1603,7 @@ const FastighetsKalkylInner = () => {
                   {[
                     { name: 'Säljarens info', color: 'purple', driftkostnad: data.driftkostnaderSaljare, driftnetto: metrics.driftnettoSaljare, cashflow: metrics.cashflowEfterSkattSaljare, coc: metrics.cocSaljare },
                     { name: '50%-regeln', color: 'blue', driftkostnad: metrics.schablon50Procent, driftnetto: metrics.driftnetto50Procent, cashflow: metrics.cashflowEfterSkatt50, coc: metrics.coc50Procent },
-                    { name: '420 kr/m²', color: 'green', driftkostnad: metrics.schablonKvm, driftnetto: metrics.driftnettoSchablon, cashflow: metrics.cashflowEfterSkattSchablon, coc: metrics.cocSchablon }
+                    { name: '420 kr/mÂ²', color: 'green', driftkostnad: metrics.schablonKvm, driftnetto: metrics.driftnettoSchablon, cashflow: metrics.cashflowEfterSkattSchablon, coc: metrics.cocSchablon }
                   ].map((method) => (
                     <div key={method.name} className={`rounded-lg p-3 border ${darkMode ? 'bg-gray-700/50 border-gray-600' : `bg-${method.color}-50 border-${method.color}-200`}`}>
                       <div className={`font-semibold text-sm mb-2 ${darkMode ? 'text-white' : ''}`}>{method.name}</div>
@@ -1633,7 +1633,7 @@ const FastighetsKalkylInner = () => {
                         <th className="text-left py-3 px-2"></th>
                         <th className={`text-right py-3 px-2 ${darkMode ? 'bg-purple-900/30' : 'bg-purple-50'}`}>Säljarens info</th>
                         <th className={`text-right py-3 px-2 ${darkMode ? 'bg-blue-900/30' : 'bg-blue-50'}`}>50%-regeln</th>
-                        <th className={`text-right py-3 px-2 ${darkMode ? 'bg-green-900/30' : 'bg-green-50'}`}>Schablon 420kr/m²</th>
+                        <th className={`text-right py-3 px-2 ${darkMode ? 'bg-green-900/30' : 'bg-green-50'}`}>Schablon 420kr/mÂ²</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1763,7 +1763,7 @@ const FastighetsKalkylInner = () => {
                     <BarChart data={[
                       { name: 'Säljarens info', cashflow: metrics.cashflowEfterSkattSaljare, coc: metrics.cocSaljare },
                       { name: '50%-regeln', cashflow: metrics.cashflowEfterSkatt50, coc: metrics.coc50Procent },
-                      { name: 'Schablon 420kr/m²', cashflow: metrics.cashflowEfterSkattSchablon, coc: metrics.cocSchablon }
+                      { name: 'Schablon 420kr/mÂ²', cashflow: metrics.cashflowEfterSkattSchablon, coc: metrics.cocSchablon }
                     ]}>
                       <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? '#374151' : '#e5e7eb'} />
                       <XAxis dataKey="name" fontSize={12} stroke={darkMode ? '#9ca3af' : '#6b7280'} />
@@ -1803,7 +1803,7 @@ const FastighetsKalkylInner = () => {
                           <div className="text-center">
                             <div className={`text-xs sm:text-sm mb-1 sm:mb-2 ${darkMode ? 'text-blue-400' : 'text-blue-700'}`}>Kontantköp</div>
                             <div className={`text-3xl sm:text-5xl font-bold mb-1 sm:mb-2 ${darkMode ? 'text-blue-300' : 'text-blue-800'}`}>
-                              {payoffKontant === Infinity ? '∞' : payoffKontant.toFixed(1)}
+                              {payoffKontant === Infinity ? 'âˆž' : payoffKontant.toFixed(1)}
                             </div>
                             <div className={`text-sm sm:text-lg mb-2 sm:mb-4 ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>år</div>
                             
@@ -1825,7 +1825,7 @@ const FastighetsKalkylInner = () => {
                           <div className="text-center">
                             <div className={`text-xs sm:text-sm mb-1 sm:mb-2 ${darkMode ? 'text-green-400' : 'text-green-700'}`}>Med lån ({100 - data.egetKapitalProcent}%)</div>
                             <div className={`text-3xl sm:text-5xl font-bold mb-1 sm:mb-2 ${darkMode ? 'text-green-300' : 'text-green-800'}`}>
-                              {isFullyOwnedCapital ? 'N/A' : (payoffBelanat === Infinity ? '∞' : payoffBelanat.toFixed(1))}
+                              {isFullyOwnedCapital ? 'N/A' : (payoffBelanat === Infinity ? 'âˆž' : payoffBelanat.toFixed(1))}
                             </div>
                             <div className={`text-sm sm:text-lg mb-2 sm:mb-4 ${darkMode ? 'text-green-400' : 'text-green-600'}`}>{isFullyOwnedCapital ? '' : 'år'}</div>
                             
@@ -1855,10 +1855,10 @@ const FastighetsKalkylInner = () => {
                       <div className={`mt-6 p-4 rounded-lg ${darkMode ? 'bg-gray-700/50' : 'bg-gray-50'}`}>
                         <h4 className={`font-semibold mb-2 ${darkMode ? 'text-white' : 'text-gray-800'}`}>Så tolkar du payoff-tiden:</h4>
                         <ul className={`text-sm space-y-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                          <li>• <strong>Under 10 år:</strong> Mycket bra investering med snabb återbetalning</li>
-                          <li>• <strong>10-15 år:</strong> Normal för hyresfastigheter</li>
-                          <li>• <strong>15-20 år:</strong> Längre återbetalningstid, men kan fortfarande vara lönsamt</li>
-                          <li>• <strong>Över 20 år:</strong> Lång återbetalningstid - värdera andra faktorer</li>
+                          <li>â€¢ <strong>Under 10 år:</strong> Mycket bra investering med snabb återbetalning</li>
+                          <li>â€¢ <strong>10-15 år:</strong> Normal för hyresfastigheter</li>
+                          <li>â€¢ <strong>15-20 år:</strong> Längre återbetalningstid, men kan fortfarande vara lönsamt</li>
+                          <li>â€¢ <strong>Över 20 år:</strong> Lång återbetalningstid - värdera andra faktorer</li>
                         </ul>
                         <p className={`mt-3 text-sm ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
                           <strong>Notera:</strong> Payoff-tid tar inte hänsyn till värdeökning på fastigheten eller inflation. 
@@ -1871,8 +1871,8 @@ const FastighetsKalkylInner = () => {
                         <div className={`mt-6 rounded-xl p-4 ${darkMode ? 'bg-indigo-900/30' : 'bg-indigo-50'}`}>
                           <h4 className={`font-semibold mb-3 ${darkMode ? 'text-indigo-400' : 'text-indigo-800'}`}>Jämförelse kontant vs belånat</h4>
                           <p className={`text-sm ${darkMode ? 'text-indigo-300' : 'text-indigo-700'}`}>
-                            Med belåning är din payoff-tid <strong>{payoffBelanat < payoffKontant ? 'kortare' : 'längre'}</strong> ({payoffBelanat === Infinity ? '∞' : payoffBelanat.toFixed(1)} år) 
-                            jämfört med kontantköp ({payoffKontant === Infinity ? '∞' : payoffKontant.toFixed(1)} år). 
+                            Med belåning är din payoff-tid <strong>{payoffBelanat < payoffKontant ? 'kortare' : 'längre'}</strong> ({payoffBelanat === Infinity ? 'âˆž' : payoffBelanat.toFixed(1)} år) 
+                            jämfört med kontantköp ({payoffKontant === Infinity ? 'âˆž' : payoffKontant.toFixed(1)} år). 
                             {payoffBelanat < payoffKontant 
                               ? ' Det beror på att du får avkastning på en större investering med mindre eget kapital (hävstång).'
                               : ' Räntekostnaderna minskar kassaflödet, vilket förlänger återbetalningstiden.'}
@@ -1967,7 +1967,7 @@ const FastighetsKalkylInner = () => {
                 <h3 className={`text-lg font-bold mb-4 ${darkMode ? 'text-white' : 'text-gray-800'}`}>📈 Värdeutveckling över 20 år</h3>
                 {isFullyOwnedCapital && (
                   <div className={`mb-4 p-3 rounded-lg text-sm ${darkMode ? 'bg-green-900/30 border border-green-800 text-green-400' : 'bg-green-50 border border-green-200 text-green-800'}`}>
-                    ✓ Kontantköp - grafen visar fastighetsvärde och ackumulerat kassaflöde utan lån
+                    âœ“ Kontantköp - grafen visar fastighetsvärde och ackumulerat kassaflöde utan lån
                   </div>
                 )}
                 <div className="mb-4">
@@ -2037,7 +2037,7 @@ const FastighetsKalkylInner = () => {
               {isFullyOwnedCapital ? (
                 <div className="bg-white rounded-xl border border-gray-200 p-6">
                   <div className="text-center py-12">
-                    <div className="text-6xl mb-4">✓</div>
+                    <div className="text-6xl mb-4">âœ“</div>
                     <h3 className="text-xl font-bold text-gray-800 mb-2">Kontantköp - ingen räntekänslighet</h3>
                     <p className="text-gray-600">
                       Du har valt 100% eget kapital, vilket innebär att du inte har några lån och därmed ingen ränterisk.
@@ -2117,7 +2117,7 @@ const FastighetsKalkylInner = () => {
                           onClick={() => removeFordel(index)}
                           className={`px-3 py-2 rounded-md transition-colors ${darkMode ? 'text-red-400 hover:bg-red-900/30' : 'text-red-600 hover:bg-red-100'}`}
                         >
-                          ×
+                          Ã—
                         </button>
                       </div>
                     ))}
@@ -2149,7 +2149,7 @@ const FastighetsKalkylInner = () => {
                           onClick={() => removeNackdel(index)}
                           className={`px-3 py-2 rounded-md transition-colors ${darkMode ? 'text-red-400 hover:bg-red-900/30' : 'text-red-600 hover:bg-red-100'}`}
                         >
-                          ×
+                          Ã—
                         </button>
                       </div>
                     ))}
@@ -2196,7 +2196,7 @@ const FastighetsKalkylInner = () => {
             <div className="space-y-4 sm:space-y-6">
               {/* Demo-kalkyl */}
               <div className={`rounded-xl border p-4 sm:p-6 ${darkMode ? 'bg-amber-900/20 border-amber-700' : 'bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200'}`}>
-                <h3 className={`text-lg sm:text-xl font-bold mb-2 ${darkMode ? 'text-amber-400' : 'text-amber-800'}`}>🎓 Demo-kalkyl</h3>
+                <h3 className={`text-lg sm:text-xl font-bold mb-2 ${darkMode ? 'text-amber-400' : 'text-amber-800'}`}>ðŸŽ“ Demo-kalkyl</h3>
                 <p className={`mb-4 text-sm ${darkMode ? 'text-amber-300/70' : 'text-amber-700'}`}>
                   Ladda in en exempelkalkyl för att se hur FastX fungerar med riktiga siffror.
                 </p>
@@ -2204,7 +2204,7 @@ const FastighetsKalkylInner = () => {
                   <div>
                     <div className={`font-semibold ${darkMode ? 'text-white' : 'text-gray-800'}`}>Exempelfastighet: Hofors</div>
                     <div className={`text-xs sm:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                      {formatCurrency(demoKalkyl.data.fastighetspris)} • {demoKalkyl.data.antalLagenheter} lgh • {demoKalkyl.data.bruksarea} m²
+                      {formatCurrency(demoKalkyl.data.fastighetspris)} â€¢ {demoKalkyl.data.antalLagenheter} lgh â€¢ {demoKalkyl.data.bruksarea} mÂ²
                     </div>
                     <div className={`text-xs mt-1 ${darkMode ? 'text-amber-400' : 'text-amber-600'}`}>Inkluderar renoveringar, fördelar & nackdelar</div>
                   </div>
@@ -2239,7 +2239,7 @@ const FastighetsKalkylInner = () => {
                           <div className="min-w-0">
                             <div className={`font-semibold truncate ${darkMode ? 'text-white' : 'text-gray-900'}`}>{calc.name}</div>
                             <div className={`text-xs sm:text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                              {formatCurrency(calc.data.fastighetspris)} • CoC: {calcMetrics.cocSaljare.toFixed(1)}%
+                              {formatCurrency(calc.data.fastighetspris)} â€¢ CoC: {calcMetrics.cocSaljare.toFixed(1)}%
                             </div>
                             <div className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>
                               Sparad: {new Date(calc.timestamp).toLocaleDateString('sv-SE')}
@@ -2273,7 +2273,7 @@ const FastighetsKalkylInner = () => {
         {/* Footer */}
         <div className={`text-center text-xs sm:text-sm py-4 flex items-center justify-center gap-2 ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
           <img src="/icons/logo.png" alt="FastX" className="h-6 w-auto rounded" />
-          <span>• Fastighetskalkyl för investerare</span>
+          <span>â€¢ Fastighetskalkyl för investerare</span>
         </div>
       </div>
       
