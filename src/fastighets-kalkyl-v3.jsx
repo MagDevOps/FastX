@@ -121,6 +121,11 @@ const FastighetsKalkylInner = () => {
   ]);
   const [renoveringBelastarDrift, setRenoveringBelastarDrift] = useState(false);
   
+  // Maxpris-kalkylator state
+  const [maxprisMode, setMaxprisMode] = useState('kassaflode'); // 'kassaflode' eller 'coc'
+  const [targetKassaflode, setTargetKassaflode] = useState(5000); // Önskat månatligt kassaflöde
+  const [targetCoC, setTargetCoC] = useState(8); // Önskad CoC i procent
+  
   // Ladda dark mode från localStorage
   useEffect(() => {
     const savedDarkMode = localStorage.getItem('fastx_darkmode');
@@ -1124,6 +1129,7 @@ const FastighetsKalkylInner = () => {
                 { id: 'cashflow', icon: '💰', label: 'Cashflow-jämförelse', mobileLabel: 'Cashflow' },
                 { id: 'payoff', icon: '⏱️', label: 'Payoff-tid', mobileLabel: 'Payoff' },
                 { id: 'breakeven', icon: '🎯', label: 'Break-even', mobileLabel: 'Break-even' },
+                { id: 'maxpris', icon: '💵', label: 'Maxpris & Finansierbarhet', mobileLabel: 'Maxpris' },
                 { id: 'tidslinje', icon: '📈', label: 'Tidslinje', mobileLabel: 'Tidslinje' },
                 { id: 'ranta', icon: '📉', label: 'Räntekänslighet', mobileLabel: 'Ränta' },
                 { id: 'anteckningar', icon: '📝', label: 'För/Nackdelar', mobileLabel: 'Anteckn.' },
@@ -1956,6 +1962,356 @@ const FastighetsKalkylInner = () => {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* MAXPRIS & FINANSIERBARHET TAB */}
+          {activeTab === 'maxpris' && (
+            <div className="space-y-4 sm:space-y-6">
+              <div className={`rounded-xl border p-4 sm:p-6 ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'}`}>
+                <h3 className={`text-lg sm:text-xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-800'}`}>💵 Maxpris & Finansierbarhet</h3>
+                <p className={`mb-4 sm:mb-6 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                  Beräkna vilket maxpris du kan betala baserat på dina mål, och se om banken skulle godkänna finansieringen.
+                </p>
+
+                {/* Välj beräkningsmetod */}
+                <div className={`mb-6 p-4 rounded-xl ${darkMode ? 'bg-gray-700/50' : 'bg-gray-50'}`}>
+                  <label className={`block text-sm font-medium mb-3 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                    Vad vill du optimera för?
+                  </label>
+                  <div className="flex gap-3 flex-wrap">
+                    <button
+                      onClick={() => setMaxprisMode('kassaflode')}
+                      className={`flex-1 min-w-[150px] px-4 py-3 rounded-lg font-medium text-sm transition-all ${
+                        maxprisMode === 'kassaflode'
+                          ? 'bg-blue-600 text-white shadow-lg'
+                          : darkMode ? 'bg-gray-600 text-gray-300 hover:bg-gray-500' : 'bg-white text-gray-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      💰 Månatligt kassaflöde
+                    </button>
+                    <button
+                      onClick={() => setMaxprisMode('coc')}
+                      className={`flex-1 min-w-[150px] px-4 py-3 rounded-lg font-medium text-sm transition-all ${
+                        maxprisMode === 'coc'
+                          ? 'bg-blue-600 text-white shadow-lg'
+                          : darkMode ? 'bg-gray-600 text-gray-300 hover:bg-gray-500' : 'bg-white text-gray-700 hover:bg-gray-100'
+                      }`}
+                    >
+                      📊 Cash-on-Cash (CoC)
+                    </button>
+                  </div>
+                </div>
+
+                {/* Input-fält baserat på vald metod */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  {maxprisMode === 'kassaflode' ? (
+                    <div className={`p-4 rounded-xl ${darkMode ? 'bg-blue-900/30' : 'bg-blue-50'}`}>
+                      <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-blue-400' : 'text-blue-700'}`}>
+                        Önskat månatligt kassaflöde
+                      </label>
+                      <div className="flex items-center">
+                        <input
+                          type="number"
+                          value={targetKassaflode}
+                          onChange={(e) => setTargetKassaflode(parseFloat(e.target.value) || 0)}
+                          className={`flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm ${
+                            darkMode ? 'bg-gray-700 text-white border-gray-600' : 'bg-white text-gray-900 border-gray-300'
+                          }`}
+                        />
+                        <span className={`ml-2 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>kr/mån</span>
+                      </div>
+                      <p className={`text-xs mt-2 ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+                        = {formatCurrency(targetKassaflode * 12)}/år
+                      </p>
+                    </div>
+                  ) : (
+                    <div className={`p-4 rounded-xl ${darkMode ? 'bg-blue-900/30' : 'bg-blue-50'}`}>
+                      <label className={`block text-sm font-medium mb-2 ${darkMode ? 'text-blue-400' : 'text-blue-700'}`}>
+                        Önskad Cash-on-Cash avkastning
+                      </label>
+                      <div className="flex items-center">
+                        <input
+                          type="number"
+                          step="0.1"
+                          value={targetCoC}
+                          onChange={(e) => setTargetCoC(parseFloat(e.target.value) || 0)}
+                          className={`flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm ${
+                            darkMode ? 'bg-gray-700 text-white border-gray-600' : 'bg-white text-gray-900 border-gray-300'
+                          }`}
+                        />
+                        <span className={`ml-2 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>%</span>
+                      </div>
+                      <p className={`text-xs mt-2 ${darkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+                        Typiskt: 6-12% är bra, 12%+ är utmärkt
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Nuvarande parametrar från huvudkalkylen */}
+                  <div className={`p-4 rounded-xl ${darkMode ? 'bg-gray-700/50' : 'bg-gray-50'}`}>
+                    <h4 className={`text-sm font-medium mb-3 ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                      Används från huvudkalkyl:
+                    </h4>
+                    <div className={`space-y-1 text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                      <div className="flex justify-between">
+                        <span>Hyresintäkter/år:</span>
+                        <span className="font-medium">{formatCurrency(effectiveData.hyresintakterAr)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Driftkostnader:</span>
+                        <span className="font-medium">{formatCurrency(effectiveData.driftkostnaderSaljare)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Eget kapital:</span>
+                        <span className="font-medium">{effectiveData.egetKapitalProcent}%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Ränta:</span>
+                        <span className="font-medium">{effectiveData.ranta}%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Amortering:</span>
+                        <span className="font-medium">{effectiveData.amorteringProcent}%</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Beräkningar */}
+                {(() => {
+                  // Beräkna maxpris baserat på vald metod
+                  const driftnetto = effectiveData.hyresintakterAr - effectiveData.driftkostnaderSaljare;
+                  
+                  let maxpris = 0;
+                  let maxprisEgetKapital = 0;
+                  let maxprisLan = 0;
+                  let maxprisRantekostnad = 0;
+                  let maxprisAmortering = 0;
+                  let maxprisKassaflode = 0;
+                  
+                  if (maxprisMode === 'kassaflode') {
+                    // Bakåträkning från önskat kassaflöde
+                    const arligtKassaflode = targetKassaflode * 12;
+                    
+                    // Kassaflöde = Driftnetto - Ränta - Amortering - Skatt
+                    // Vi behöver hitta ett pris där detta stämmer
+                    
+                    // Iterativ lösning
+                    for (let testPris = 100000; testPris <= 50000000; testPris += 50000) {
+                      const testEgetKapital = testPris * (effectiveData.egetKapitalProcent / 100);
+                      const testLan = testPris - testEgetKapital;
+                      const testRanta = testLan * (effectiveData.ranta / 100);
+                      const testAmortering = testLan * (effectiveData.amorteringProcent / 100);
+                      
+                      // Resultat före skatt = driftnetto - ränta (amortering ej avdragsgill)
+                      const resultatForSkatt = driftnetto - testRanta;
+                      const skatt = Math.max(0, resultatForSkatt * (effectiveData.bolagsskattProcent / 100));
+                      
+                      // Kassaflöde = driftnetto - ränta - amortering - skatt
+                      const testKassaflode = driftnetto - testRanta - testAmortering - skatt;
+                      
+                      if (testKassaflode >= arligtKassaflode) {
+                        maxpris = testPris;
+                        maxprisEgetKapital = testEgetKapital;
+                        maxprisLan = testLan;
+                        maxprisRantekostnad = testRanta;
+                        maxprisAmortering = testAmortering;
+                        maxprisKassaflode = testKassaflode;
+                        break;
+                      }
+                    }
+                  } else {
+                    // Bakåträkning från önskad CoC
+                    // CoC = Kassaflöde / Eget kapital
+                    // Vi vill hitta pris där: Kassaflöde / EgetKapital = targetCoC/100
+                    
+                    for (let testPris = 100000; testPris <= 50000000; testPris += 50000) {
+                      const testEgetKapital = testPris * (effectiveData.egetKapitalProcent / 100);
+                      const testLan = testPris - testEgetKapital;
+                      const testRanta = testLan * (effectiveData.ranta / 100);
+                      const testAmortering = testLan * (effectiveData.amorteringProcent / 100);
+                      
+                      const resultatForSkatt = driftnetto - testRanta;
+                      const skatt = Math.max(0, resultatForSkatt * (effectiveData.bolagsskattProcent / 100));
+                      const testKassaflode = driftnetto - testRanta - testAmortering - skatt;
+                      
+                      const testCoC = testEgetKapital > 0 ? (testKassaflode / testEgetKapital) * 100 : 0;
+                      
+                      if (testCoC >= targetCoC) {
+                        maxpris = testPris;
+                        maxprisEgetKapital = testEgetKapital;
+                        maxprisLan = testLan;
+                        maxprisRantekostnad = testRanta;
+                        maxprisAmortering = testAmortering;
+                        maxprisKassaflode = testKassaflode;
+                        break;
+                      }
+                    }
+                  }
+                  
+                  // Finansierbarhet - Bankens stress-test (2% högre ränta)
+                  const stressRanta = effectiveData.ranta + 2;
+                  const stressRantekostnad = maxprisLan * (stressRanta / 100);
+                  const stressKassaflode = driftnetto - stressRantekostnad - maxprisAmortering;
+                  const klarStressTest = stressKassaflode >= 0;
+                  
+                  // Beräkna vilken direktavkastning detta ger
+                  const direktavkastning = maxpris > 0 ? (driftnetto / maxpris) * 100 : 0;
+                  
+                  // Beräkna CoC för detta pris
+                  const actualCoC = maxprisEgetKapital > 0 ? (maxprisKassaflode / maxprisEgetKapital) * 100 : 0;
+                  
+                  return (
+                    <>
+                      {maxpris > 0 ? (
+                        <>
+                          {/* Huvudresultat */}
+                          <div className={`rounded-xl p-6 mb-6 ${darkMode ? 'bg-gradient-to-br from-green-900/30 to-blue-900/30' : 'bg-gradient-to-br from-green-50 to-blue-50'}`}>
+                            <div className="text-center mb-4">
+                              <div className={`text-sm mb-2 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                Maxpris du kan betala
+                              </div>
+                              <div className={`text-4xl sm:text-5xl font-bold ${darkMode ? 'text-green-400' : 'text-green-700'}`}>
+                                {formatCurrency(maxpris)}
+                              </div>
+                            </div>
+                            
+                            <div className={`grid grid-cols-2 gap-4 pt-4 border-t ${darkMode ? 'border-gray-600' : 'border-gray-200'}`}>
+                              <div className="text-center">
+                                <div className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Kassaflöde/mån</div>
+                                <div className={`text-lg font-bold ${maxprisKassaflode >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                  {formatCurrency(maxprisKassaflode / 12)}
+                                </div>
+                              </div>
+                              <div className="text-center">
+                                <div className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>Cash-on-Cash</div>
+                                <div className={`text-lg font-bold ${actualCoC >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                  {actualCoC.toFixed(1)}%
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Finansierbarhet */}
+                          <div className={`rounded-xl p-4 sm:p-6 mb-6 ${klarStressTest ? (darkMode ? 'bg-green-900/20 border border-green-800' : 'bg-green-50 border border-green-200') : (darkMode ? 'bg-red-900/20 border border-red-800' : 'bg-red-50 border border-red-200')}`}>
+                            <h4 className={`text-lg font-bold mb-3 flex items-center gap-2 ${klarStressTest ? 'text-green-500' : 'text-red-500'}`}>
+                              {klarStressTest ? '✅' : '❌'} Bankens stress-test
+                            </h4>
+                            <p className={`text-sm mb-3 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                              Banken testar med {stressRanta}% ränta (+2% säkerhetsmarginal)
+                            </p>
+                            <div className={`space-y-2 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                              <div className="flex justify-between">
+                                <span>Stress-räntekostnad:</span>
+                                <span className="font-medium">{formatCurrency(stressRantekostnad)}/år</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span>Kassaflöde vid stress:</span>
+                                <span className={`font-bold ${stressKassaflode >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                  {formatCurrency(stressKassaflode)}/år
+                                </span>
+                              </div>
+                            </div>
+                            {!klarStressTest && (
+                              <div className={`mt-3 p-3 rounded-lg text-xs ${darkMode ? 'bg-red-900/30' : 'bg-red-100'}`}>
+                                ⚠️ Banken kan neka lån - överväg högre insats eller lägre pris
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Detaljerad uppdelning */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {/* Finansiering */}
+                            <div className={`rounded-xl p-4 ${darkMode ? 'bg-gray-700/50' : 'bg-gray-50'}`}>
+                              <h4 className={`font-semibold mb-3 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                💰 Finansiering
+                              </h4>
+                              <div className={`space-y-2 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                <div className="flex justify-between">
+                                  <span>Eget kapital ({effectiveData.egetKapitalProcent}%):</span>
+                                  <span className="font-medium">{formatCurrency(maxprisEgetKapital)}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>Lån ({100 - effectiveData.egetKapitalProcent}%):</span>
+                                  <span className="font-medium">{formatCurrency(maxprisLan)}</span>
+                                </div>
+                                <div className="flex justify-between pt-2 border-t border-gray-600">
+                                  <span>Räntekostnad/år:</span>
+                                  <span className="font-medium">{formatCurrency(maxprisRantekostnad)}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>Amortering/år:</span>
+                                  <span className="font-medium">{formatCurrency(maxprisAmortering)}</span>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Nyckeltal */}
+                            <div className={`rounded-xl p-4 ${darkMode ? 'bg-gray-700/50' : 'bg-gray-50'}`}>
+                              <h4 className={`font-semibold mb-3 text-sm ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                📊 Nyckeltal
+                              </h4>
+                              <div className={`space-y-2 text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                                <div className="flex justify-between">
+                                  <span>Direktavkastning:</span>
+                                  <span className="font-medium">{direktavkastning.toFixed(2)}%</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>Driftnetto (NOI):</span>
+                                  <span className="font-medium">{formatCurrency(driftnetto)}</span>
+                                </div>
+                                <div className="flex justify-between pt-2 border-t border-gray-600">
+                                  <span>Hyra/mån som behövs:</span>
+                                  <span className="font-medium">{formatCurrency(effectiveData.hyresintakterAr / 12)}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                  <span>Per m²:</span>
+                                  <span className="font-medium">
+                                    {effectiveData.bruksarea > 0 ? Math.round(effectiveData.hyresintakterAr / 12 / effectiveData.bruksarea) : 0} kr/m²
+                                  </span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Tips */}
+                          <div className={`mt-6 p-4 rounded-lg ${darkMode ? 'bg-blue-900/20 border border-blue-800' : 'bg-blue-50 border border-blue-200'}`}>
+                            <h4 className={`font-semibold mb-2 text-sm ${darkMode ? 'text-blue-400' : 'text-blue-700'}`}>
+                              💡 Tips för budgivning
+                            </h4>
+                            <ul className={`text-xs space-y-1 ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                              <li>• Budmax: <strong>{formatCurrency(maxpris)}</strong> för att nå ditt mål</li>
+                              <li>• Säkerhetsmarginal: Lägg bud 5-10% lägre om möjligt</li>
+                              <li>• Förhandlingsutrymme: {formatCurrency(maxpris * 0.9)} - {formatCurrency(maxpris * 0.95)}</li>
+                              {!klarStressTest && <li className="text-red-500">• ⚠️ Banken kan kräva högre insats vid detta pris</li>}
+                            </ul>
+                          </div>
+                        </>
+                      ) : (
+                        <div className={`text-center py-12 rounded-xl ${darkMode ? 'bg-gray-700/50' : 'bg-gray-50'}`}>
+                          <div className="text-6xl mb-4">❌</div>
+                          <h3 className={`text-xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                            Omöjligt att uppnå målet
+                          </h3>
+                          <p className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                            Med nuvarande hyror och kostnader går det inte att nå ditt mål.
+                          </p>
+                          <div className={`mt-4 p-4 rounded-lg max-w-md mx-auto ${darkMode ? 'bg-yellow-900/20' : 'bg-yellow-50'}`}>
+                            <p className={`text-xs ${darkMode ? 'text-yellow-400' : 'text-yellow-700'}`}>
+                              <strong>Förslag:</strong><br/>
+                              • Sänk ditt mål för kassaflöde/CoC<br/>
+                              • Öka hyresintäkterna i huvudkalkylen<br/>
+                              • Minska driftkostnaderna<br/>
+                              • Höj eget kapital-andelen
+                            </p>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
             </div>
           )}
